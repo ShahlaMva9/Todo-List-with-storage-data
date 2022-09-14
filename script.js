@@ -2,7 +2,7 @@ const input = document.querySelector("#newtask input");
 const btn = document.querySelector("#newtask button");
 const tasks = document.querySelector("#tasks");
 const storeData = [];
-
+const isCom = ["Completed", "Not Complete"];
 input.addEventListener("input", (e) => {
   const { value } = e.target;
   if (!value.trim().length) {
@@ -53,12 +53,20 @@ function completeList() {
       if (answer) {
         i.parentElement.parentElement.classList.add("greenBackgorund");
         const currentList = i.parentElement.parentElement.firstElementChild;
-        const findList = storeData.find(
-          (i) => i.value == currentList.innerText
-        );
+        console.log(currentList);
+        let findList;
+        storeData.forEach((i) => {
+          if (i.value[0] == currentList.innerText) {
+            findList = i;
+          }
+        });
+        console.log(findList);
+        const a = localStorage.getItem(findList.key);
+
+        console.log(a);
         localStorage.setItem(
           findList.key,
-          JSON.stringify([findList.value, "Completed"])
+          JSON.stringify([findList.value, "Compeleted"])
         );
       }
     });
@@ -89,14 +97,21 @@ function storageData(e) {
   deleteList();
 
   const span = document.querySelectorAll("#tasks #taskname ");
-
+  console.log(span[0].parentElement);
   for (let i = 0; i < span.length; i++) {
-    storeData[i] = {
-      key: `list${i}`,
-      value: span[i].innerText,
-    };
+    if (span[i].parentElement.classList.contains("greenBackgorund")) {
+      storeData[i] = {
+        key: `list${i}`,
+        value: [span[i].innerText, `Compeleted`],
+      };
+    } else {
+      storeData[i] = {
+        key: `list${i}`,
+        value: [span[i].innerText],
+      };
+    }
 
-    localStorage.setItem(`list${i}`, JSON.stringify([span[i].innerText]));
+    localStorage.setItem(storeData[i].key, JSON.stringify(storeData[i].value));
   }
 }
 
